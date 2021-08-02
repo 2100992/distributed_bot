@@ -1,0 +1,31 @@
+version: '3.3'
+services:
+  receiver:
+    build:
+      context: ./receiver/
+    container_name: 'bot_receiver'
+    image: 'bot_receiver'
+    environment:
+      BOT_TOKEN: 'youre_bot_token'
+      RABBITMQ_URL: 'amqp://guest:guest@localhost:5672/%2F'
+      REPLY_TO_QUEUE: 'bot_reply_queue'
+      ADMIN_IDS: '[1, 2, 3, 4]'
+
+  transmitter:
+    build:
+      context: ./transmitter/
+    container_name: 'bot_transmitter'
+    image: 'bot_transmitter'
+    environment:
+      BOT_TOKEN: 'youre_bot_token'
+      RABBITMQ_URL: 'amqp://guest:guest@localhost:5672/%2F'
+      QUEUE: 'bot_reply_queue'
+
+  worker_ping:
+    build:
+      context: ./worker_ping/
+    container_name: 'worker_ping'
+    image: 'worker_ping'
+    environment:
+      RABBITMQ_URL: 'amqp://guest:guest@localhost:5672/%2F'
+      QUEUE: 'ping_queue'

@@ -1,0 +1,8 @@
+.venv
+log.txt
+*.pyc
+*.ipynb
+
+
+docker-compose.override.yml
+

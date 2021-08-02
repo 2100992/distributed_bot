@@ -1,0 +1,10 @@
+{
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true,
+    "python.analysis.extraPaths": [
+        "./pika_wrapper"
+    ],
+    "python.autoComplete.extraPaths": [
+        "./pika_wrapper"
+    ],
+}
