@@ -25,6 +25,11 @@ publisher = Client(parameters=PIKA_PARAMETERS, prefetch_count=1)
 
 publisher.queues[REPLY_TO_QUEUE] = Queue(name=REPLY_TO_QUEUE, durable=True)
 
+publisher.queues['text'] = Queue(
+    name='text_queue',
+    durable=True
+)
+
 for _command in queue_commands:
     publisher.queues[_command] = Queue(
         name=_command + '_queue',
@@ -37,10 +42,11 @@ for _command in topic_commands:
         exchange_type=ExchangeType.fanout
     )
 
-publisher.queues['text'] = Queue(
-    name='text_queue',
-    durable=True
-)
+
+def is_admin(message):
+    if message.from_user.id in ADMIN_IDS:
+        return True
+    return False
 
 
 @bot.message_handler(commands=list(queue_commands))
@@ -51,30 +57,19 @@ def handle_queue_commands(message: telebot.types.Message):
         return False
 
     if queue_commands[_command]['admins_only']:
-        if message.from_user.id in ADMIN_IDS:
-            publisher.publish(
-                body=json.dumps(message.json),
-                queue=publisher.queues[_command],
-                exchange='',
-                reply_to_queue=publisher.queues[REPLY_TO_QUEUE],
-                properties=pika.BasicProperties(
-                    correlation_id=str(message.from_user.id)
-                )
-            )
-            print('admin publish')
-        else:
+        if not is_admin(message):
             bot.reply_to(message, 'Это только для админов')
-    else:
-        publisher.publish(
-            body=json.dumps(message.json),
-            queue=publisher.queues[_command],
-            exchange='',
-            reply_to_queue=publisher.queues[REPLY_TO_QUEUE],
-            properties=pika.BasicProperties(
-                correlation_id=str(message.from_user.id)
-            )
+            return False
+    publisher.publish(
+        body=json.dumps(message.json),
+        queue=publisher.queues[_command],
+        exchange='',
+        properties=pika.BasicProperties(
+            correlation_id=str(message.id),
+            reply_to=publisher.queues[REPLY_TO_QUEUE].queue
         )
-        print('no_admin publish')
+    )
+    return True
 
 
 @bot.message_handler(commands=list(topic_commands))
@@ -85,31 +80,21 @@ def handle_topic_commands(message: telebot.types.Message):
         return False
 
     if topic_commands[_command]['admins_only']:
-        if message.from_user.id in ADMIN_IDS:
-            publisher.publish(
-                body=json.dumps(message.json),
-                queue='',
-                exchange=publisher.exchanges[_command],
-                reply_to_queue=publisher.queues[REPLY_TO_QUEUE],
-                properties=pika.BasicProperties(
-                    correlation_id=str(message.from_user.id)
-                )
-            )
-            print('admin publish')
-        else:
+        if not is_admin(message):
             bot.reply_to(message, 'Это только для админов')
-    else:
-        publisher.publish(
-            body=json.dumps(message.json),
-            queue='',
-            exchange=publisher.exchanges[_command],
-            reply_to_queue=publisher.queues[REPLY_TO_QUEUE],
-            properties=pika.BasicProperties(
-                correlation_id=str(message.from_user.id)
-            )
+            return False
+
+    publisher.publish(
+        body=json.dumps(message.json),
+        queue='',
+        exchange=publisher.exchanges[_command],
+        properties=pika.BasicProperties(
+            correlation_id=str(message.from_user.id),
+            reply_to=publisher.queues[REPLY_TO_QUEUE].queue
         )
-        print('no_admin publish')
+    )
+    return True
 
 
 publisher.connect()
-bot.polling()
+bot.polling(none_stop=True, interval=0, timeout=20)
