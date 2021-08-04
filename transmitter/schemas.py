@@ -6,6 +6,7 @@ FromSchema = Schema.from_dict(
         'id': fields.Int(),
         'is_bot': fields.Bool(),
         'first_name': fields.Str(),
+        'last_name': fields.Str(),
         'username': fields.Str(),
         'language_code': fields.Str()
     }
@@ -16,6 +17,7 @@ ChatSchema = Schema.from_dict(
         'id': fields.Int(),
         'title': fields.Str(),
         'first_name': fields.Str(),
+        'last_name': fields.Str(),
         'username': fields.Str(),
         'type': fields.Str(),
         'all_members_are_administrators': fields.Bool()
