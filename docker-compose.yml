@@ -5,6 +5,7 @@ services:
       context: ./receiver/
     container_name: 'bot_receiver'
     image: 'bot_receiver'
+    restart: always
     environment:
       BOT_TOKEN: 'youre_bot_token'
       RABBITMQ_URL: 'amqp://guest:guest@localhost:5672/%2F'
@@ -16,6 +17,7 @@ services:
       context: ./transmitter/
     container_name: 'bot_transmitter'
     image: 'bot_transmitter'
+    restart: always
     environment:
       BOT_TOKEN: 'youre_bot_token'
       RABBITMQ_URL: 'amqp://guest:guest@localhost:5672/%2F'
@@ -26,6 +28,7 @@ services:
       context: ./worker_ping/
     container_name: 'worker_ping'
     image: 'worker_ping'
+    restart: always
     environment:
       RABBITMQ_URL: 'amqp://guest:guest@localhost:5672/%2F'
       QUEUE: 'ping_queue'
