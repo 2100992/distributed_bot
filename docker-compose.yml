@@ -32,3 +32,14 @@ services:
     environment:
       RABBITMQ_URL: 'amqp://guest:guest@localhost:5672/%2F'
       QUEUE: 'ping_queue'
+
+  worker_temp:
+    build:
+      context: ./worker_temp/
+    container_name: 'worker_temp'
+    image: 'worker_temp'
+    restart: always
+    environment:
+      RABBITMQ_URL: 'amqp://guest:guest@localhost:5672/%2F'
+      EXCHANGE: 'temp_exchange'
+      MESSAGE: 'Температура процессора - {temp} градусов цельсия'
