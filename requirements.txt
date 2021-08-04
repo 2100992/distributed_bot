@@ -1,0 +1,4 @@
+-r ./receiver/requirements.txt
+-r ./transmitter/requirements.txt
+-r ./worker_ping/requirements.txt
+-r ./worker_temp/requirements.txt
