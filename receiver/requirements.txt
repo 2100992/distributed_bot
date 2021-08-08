@@ -1,2 +1,4 @@
 pika==1.2.0
+pika-wrapper==0.0.3
+
 pyTelegramBotAPI==3.8.1

@@ -1,2 +1,4 @@
 pika==1.2.0
-pyspeedtest==1.2.7
+pika-wrapper==0.0.3
+
+speedtest-cli==2.1.3
