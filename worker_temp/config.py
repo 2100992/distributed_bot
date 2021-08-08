@@ -8,8 +8,7 @@ PIKA_PARAMETERS = pika.URLParameters(
 )
 
 EXCHANGE = os.getenv('EXCHANGE', 'temp_exchange')
-MESSAGE = os.getenv('MESSAGE', 'Температура процессора - {temp} градусов цельсия')
-
+DEVICE_NAME = os.getenv('DEVICE_NAME', 'unknown device')
 
 LOG_NAME = 'log.txt'
 LOGGING = {
