@@ -5,11 +5,11 @@ import logging.config
 
 from pika.exchange_type import ExchangeType
 
-import pyspeedtest
+import speedtest
 
 from config import PIKA_PARAMETERS, EXCHANGE
-from config import LOGGING, MESSAGE_UP, MESSAGE_DOWN, MESSAGE_PING
-
+from config import LOGGING
+from config import DEVICE_NAME
 
 from pika_wrapper import Client, Queue, Exchange
 
@@ -26,7 +26,7 @@ consumer.queues['queue'] = queue
 
 consumer.connect()
 
-st = pyspeedtest.SpeedTest()
+st = speedtest.Speedtest()
 
 
 def callback(body: bytes,
@@ -37,34 +37,39 @@ def callback(body: bytes,
     reply_threadsafe(json.dumps(
         {
             'message': json.loads(body.decode()),
-            'text': 'Подождите, измеряю'
+            'text': f'Измеряю на {DEVICE_NAME}'
         }
     ).encode()
     )
 
+    server = st.get_best_server()
     reply_threadsafe(json.dumps(
         {
             'message': json.loads(body.decode()),
-            'text': MESSAGE_PING.format(ping=st.ping())
+            'text': f'Для измерения на {DEVICE_NAME} выбран сервер - "{server.get("url")}". Ping = {server.get("latency")} ms'
         }
     ).encode()
     )
 
+    down = st.download()/1000000
     reply_threadsafe(json.dumps(
         {
             'message': json.loads(body.decode()),
-            'text': MESSAGE_DOWN.format(speed=st.download()/1000000)
+            'text': f'Скорость закачки на {DEVICE_NAME}- {down} Mbps'
         }
     ).encode()
     )
 
+    up = st.upload()/1000000
     reply_threadsafe(json.dumps(
         {
             'message': json.loads(body.decode()),
-            'text': MESSAGE_UP.format(speed=st.upload()/1000000)
+            'text': f'Скорость отдачи на {DEVICE_NAME} - {up} Mbps'
         }
     ).encode()
     )
+
+    return True
 
 
 consumer.setup_consumer(queue=queue, callback=callback)

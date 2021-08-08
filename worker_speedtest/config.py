@@ -8,10 +8,7 @@ PIKA_PARAMETERS = pika.URLParameters(
 )
 
 EXCHANGE = os.getenv('EXCHANGE', 'speedtest_exchange')
-MESSAGE_PING = os.getenv('MESSAGE_PING', 'Пинг - {ping} ms')
-MESSAGE_DOWN = os.getenv('MESSAGE_DOWN', 'Скорость закачки - {speed} Mbps')
-MESSAGE_UP = os.getenv('MESSAGE_UP', 'Скорость отдачи - {speed} Mbps')
-
+DEVICE_NAME = os.getenv('DEVICE_NAME', 'unknown device')
 
 LOG_NAME = 'log.txt'
 LOGGING = {
