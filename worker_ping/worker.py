@@ -30,20 +30,16 @@ def callback(body: bytes,
              reply_threadsafe: callable = None
              ):
     logger.info(f'    [*]    body="{body}"')
-    if reply_threadsafe:
-        reply_threadsafe(json.dumps(
-            {
-                'message': json.loads(body.decode()),
-                'text': 'wait please'
-            }
-        ).encode()
-        )
-    return json.dumps(
+
+    reply_threadsafe(json.dumps(
         {
             'message': json.loads(body.decode()),
             'text': 'pong'
         }
     ).encode()
+    )
+
+    return True
 
 
 consumer.setup_consumer(queue=queue, callback=callback)
