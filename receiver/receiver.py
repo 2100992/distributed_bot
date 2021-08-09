@@ -30,6 +30,11 @@ publisher.queues['text'] = Queue(
     durable=True
 )
 
+publisher.queues['photo'] = Queue(
+    name='photo_queue',
+    durable=True
+)
+
 for _command in queue_commands:
     publisher.queues[_command] = Queue(
         name=_command + '_queue',
@@ -95,6 +100,24 @@ def handle_topic_commands(message: telebot.types.Message):
     )
     return True
 
+@bot.message_handler(content_types=['photo'])
+def handle_photo(message: telebot.types.Message):
+    json_data = message.json
+    json_data['photo_paths'] = []
+    json_data['token'] = BOT_TOKEN
+    for photo in message.json.get('photo', []):
+        file_info = bot.get_file(photo['file_id'])
+        json_data['photo_paths'].append(file_info.file_path)
+
+    publisher.publish(
+        body=json.dumps(json_data),
+        queue=publisher.queues['photo'],
+        exchange='',
+        properties=pika.BasicProperties(
+            correlation_id=str(message.from_user.id),
+            reply_to=publisher.queues[REPLY_TO_QUEUE].queue
+        )
+    )
 
 publisher.connect()
 bot.polling(none_stop=True, interval=0, timeout=20)

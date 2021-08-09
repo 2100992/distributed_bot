@@ -54,3 +54,14 @@ services:
       RABBITMQ_URL: 'amqp://guest:guest@localhost:5672/%2F'
       EXCHANGE: 'speedtest_exchange'
       DEVICE_NAME: 'YourDeviceName'
+
+  worker_photo:
+    build:
+      context: ./worker_photo/
+    container_name: 'worker_photo'
+    image: 'worker_photo'
+    restart: always
+    environment:
+      RABBITMQ_URL: 'amqp://guest:guest@localhost:5672/%2F'
+      QUEUE: 'photo_queue'
+      DEVICE_NAME: 'YourDeviceName'
