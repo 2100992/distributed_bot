@@ -1,4 +1,4 @@
 pika==1.2.0
-pika-wrapper==0.0.3
+pika-wrapper==0.0.4
 
 speedtest-cli==2.1.3
