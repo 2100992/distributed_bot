@@ -4,16 +4,11 @@ import logging
 import logging.config
 
 
-import pika
-from pika.exchange_type import ExchangeType
-from pika.adapters.blocking_connection import BlockingChannel
-from pika.spec import Basic
-
 from config import PIKA_PARAMETERS, QUEUE
 from config import LOGGING
 
 
-from pika_wrapper import Client, Queue, Exchange
+from pika_wrapper import Client, Queue
 
 
 logging.config.dictConfig(LOGGING)
