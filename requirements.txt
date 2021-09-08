@@ -1,3 +1,6 @@
+wheel
+flake8==3.9.2
+autopep8==1.5.7
 -r ./receiver/requirements.txt
 -r ./transmitter/requirements.txt
 -r ./worker_ping/requirements.txt
